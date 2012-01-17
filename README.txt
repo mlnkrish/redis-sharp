@@ -1,0 +1,1 @@
+Implementation of https://github.com/antirez/redis in c#.
