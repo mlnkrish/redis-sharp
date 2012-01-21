@@ -1,0 +1,4 @@
+_ReSharper.redis-sharp
+bin
+obj
+*.suo
