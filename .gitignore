@@ -2,3 +2,5 @@ _ReSharper.redis-sharp
 bin
 obj
 *.suo
+*.DotSettings.User
+*.csproj.user
