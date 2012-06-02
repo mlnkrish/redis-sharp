@@ -60,10 +60,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="server\PingCommandTest.cs" />
+    <Compile Include="server\commands\PingCommandTest.cs" />
     <Compile Include="server\RedisRequestTest.cs" />
     <Compile Include="server\RedisServerPerformanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="server\commands\StringCommandsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\redis-sharp\redis-sharp.csproj">

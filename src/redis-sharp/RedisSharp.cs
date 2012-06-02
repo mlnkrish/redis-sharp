@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using redis_sharp.server;
+using redis_sharp.server.commands;
 
 
 namespace redis_sharp
@@ -76,7 +77,7 @@ namespace redis_sharp
 
                 if (redisRequest.IsComplete())
                 {
-                    Send(clientSocket, "+PONG\r\n");
+                    Send(clientSocket, Commands.ProcessRequest(redisRequest));
                 }
                 else
                 {

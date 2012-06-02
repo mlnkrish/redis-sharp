@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using ServiceStack.Redis;
 
-namespace redis_sharp_test.server
+namespace redis_sharp_test.server.commands
 {
     [TestFixture]
     public class PingCommandTest
