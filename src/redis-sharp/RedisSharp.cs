@@ -15,7 +15,7 @@ namespace redis_sharp
         public static void StartListening()
         {
             var ipAddress = IPAddress.Loopback;
-            var localEndPoint = new IPEndPoint(ipAddress, 2046);
+            var localEndPoint = new IPEndPoint(ipAddress, 6379);
             var listener = new Socket(AddressFamily.InterNetwork,SocketType.Stream, ProtocolType.Tcp);
             
             try
@@ -49,13 +49,13 @@ namespace redis_sharp
             var listener = (Socket)ar.AsyncState;
             var handler = listener.EndAccept(ar);
 
-            var redisRequest = new RedisRequest(handler);
+            var redisRequest = new Request(handler);
             handler.BeginReceive(redisRequest.Buffer, 0,redisRequest.NumberOfBytesToRead , 0,ReadCallback, redisRequest);
         }
 
         public static void ReadCallback(IAsyncResult ar)
         {
-            var redisRequest = (RedisRequest)ar.AsyncState;
+            var redisRequest = (Request)ar.AsyncState;
             var clientSocket = redisRequest.ClientSocket;
 
             var bytesRead = 0;
@@ -99,7 +99,7 @@ namespace redis_sharp
 
                 clientSocket.EndSend(ar);
 
-                var redisRequest = new RedisRequest(clientSocket);
+                var redisRequest = new Request(clientSocket);
                 clientSocket.BeginReceive(redisRequest.Buffer, 0, redisRequest.NumberOfBytesToRead, 0, ReadCallback, redisRequest);
             }
             catch (Exception e)

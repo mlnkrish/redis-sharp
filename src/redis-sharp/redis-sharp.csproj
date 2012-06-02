@@ -58,7 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="server\RedisRequest.cs" />
+    <Compile Include="server\Commands.cs" />
+    <Compile Include="server\Request.cs" />
     <Compile Include="RedisSharp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

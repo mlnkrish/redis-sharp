@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
@@ -14,14 +13,14 @@ namespace redis_sharp.server
         Complete
     }
 
-    public class RedisRequest
+    public class Request
     {
         private RequestState currentState = RequestState.Uninitialized;
         private int numberOfCommandsRead;
         private string rawUnprocesedCommand = "";
         private int currentCommandLength;
 
-        public RedisRequest(Socket client)
+        public Request(Socket client)
         {
             Args = new List<string>();
             NumberOfBytesToRead = 4;

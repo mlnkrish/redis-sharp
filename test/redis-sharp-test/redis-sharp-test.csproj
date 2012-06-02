@@ -60,8 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="server\PingCommandTest.cs" />
     <Compile Include="server\RedisRequestTest.cs" />
-    <Compile Include="server\RedisServerTest.cs" />
+    <Compile Include="server\RedisServerPerformanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

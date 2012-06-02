@@ -4,3 +4,4 @@ obj
 *.suo
 *.DotSettings.User
 *.csproj.user
+*.ReSharper.user
