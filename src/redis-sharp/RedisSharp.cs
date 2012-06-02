@@ -10,12 +10,7 @@ namespace redis_sharp
 {
     public class RedisSharp
     {
-        // Thread signal.
-        public static ManualResetEvent allDone = new ManualResetEvent(false);
-
-        public RedisSharp()
-        {
-        }
+        private static readonly ManualResetEvent ReadyForNextConnection = new ManualResetEvent(false);
 
         public static void StartListening()
         {
@@ -30,15 +25,12 @@ namespace redis_sharp
 
                 while (true)
                 {
-                    // Set the event to nonsignaled state.
-                    allDone.Reset();
+                    ReadyForNextConnection.Reset();
 
-                    // Start an asynchronous socket to listen for connections.
                     Console.WriteLine("Waiting for a connection...");
-                    listener.BeginAccept(AcceptCallback,listener);
+                    listener.BeginAccept(OnAcceptConnection,listener);
 
-                    // Wait until a connection is made before continuing.
-                    allDone.WaitOne();
+                    ReadyForNextConnection.WaitOne();
                 }
             }
             catch (Exception e)
@@ -50,52 +42,44 @@ namespace redis_sharp
             Console.Read();
         }
 
-        public static void AcceptCallback(IAsyncResult ar)
+        public static void OnAcceptConnection(IAsyncResult ar)
         {
-            // Signal the main thread to continue.
-            allDone.Set();
+            ReadyForNextConnection.Set();
 
-            // Get the socket that handles the client request.
             var listener = (Socket)ar.AsyncState;
             var handler = listener.EndAccept(ar);
 
-            // Create the state object.
             var redisRequest = new RedisRequest(handler);
             handler.BeginReceive(redisRequest.Buffer, 0,redisRequest.NumberOfBytesToRead , 0,ReadCallback, redisRequest);
         }
 
         public static void ReadCallback(IAsyncResult ar)
         {
-            Console.WriteLine("reading ...");
-
             var redisRequest = (RedisRequest)ar.AsyncState;
             var clientSocket = redisRequest.ClientSocket;
 
-            // Read data from the client socket. 
-            int bytesRead = clientSocket.EndReceive(ar);
+            var bytesRead = 0;
+            try
+            {
+                bytesRead = clientSocket.EndReceive(ar);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
-            Console.WriteLine("read bytes --> "+bytesRead);
 
             if (bytesRead > 0)
             {
-                // There  might be more data, so store the data received so far.
                 var value = Encoding.ASCII.GetString(redisRequest.Buffer, 0, bytesRead);
-                Console.WriteLine("read value --> " + value);
                 redisRequest.AddData(value);
 
-                // Check for end-of-file tag. If it is not there, read 
-                // more data.
                 if (redisRequest.IsComplete())
                 {
-                    // All the data has been read from the 
-                    // client. Display it on the console.
-                    Console.WriteLine("Command --> " + redisRequest);
-                    // Echo the data back to the client.
                     Send(clientSocket, "+PONG\r\n");
                 }
                 else
                 {
-                    // Not all data received. Get more.
                     clientSocket.BeginReceive(redisRequest.Buffer, 0, redisRequest.NumberOfBytesToRead, 0,ReadCallback, redisRequest);
                 }
             }
@@ -103,10 +87,7 @@ namespace redis_sharp
 
         private static void Send(Socket clientSocket, String data)
         {
-            // Convert the string data to byte data using ASCII encoding.
             var byteData = Encoding.ASCII.GetBytes(data);
-
-            // Begin sending the data to the remote device.
             clientSocket.BeginSend(byteData, 0, byteData.Length, 0,SendCallback, clientSocket);
         }
 
@@ -114,27 +95,32 @@ namespace redis_sharp
         {
             try
             {
-                // Retrieve the socket from the state object.
-                var handler = (Socket)ar.AsyncState;
+                var clientSocket = (Socket)ar.AsyncState;
 
-                // Complete sending the data to the remote device.
-                var bytesSent = handler.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+                clientSocket.EndSend(ar);
 
-//                handler.Shutdown(SocketShutdown.Both);
-//                handler.Close();
-
+                var redisRequest = new RedisRequest(clientSocket);
+                clientSocket.BeginReceive(redisRequest.Buffer, 0, redisRequest.NumberOfBytesToRead, 0, ReadCallback, redisRequest);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+                Console.ReadKey();
             }
         }
 
-
         public static int Main(String[] args)
         {
-            StartListening();
+            try
+            {
+                StartListening();
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.ReadKey();
+            }
             return 0;
         }
     }
