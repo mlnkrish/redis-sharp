@@ -15,15 +15,17 @@ namespace redis_sharp_test.server
         public void SingleConnectionLooping()
         {
             var stopwatch = new Stopwatch();
-            stopwatch.Start();
 
             var redisClient = new RedisClient();;
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                redisClient.Ping();
+//                redisClient.Ping();
+                stopwatch.Restart();
+                redisClient.Set(i.ToString(), "bar");
+                stopwatch.Stop();
+                Console.WriteLine("---->" + stopwatch.ElapsedMilliseconds);
             }
-
-            stopwatch.Stop();
+            
             Console.WriteLine("---->" + stopwatch.ElapsedMilliseconds);
         }
 
@@ -44,7 +46,8 @@ namespace redis_sharp_test.server
             {
                 for (int j = 0; j < list.Count; j++)
                 {
-                    list[j].Ping();
+//                    list[j].Ping();
+                    list[j].Set(i.ToString() + j.ToString(), "bar");
                 }
             }
 
@@ -56,36 +59,34 @@ namespace redis_sharp_test.server
         public void ThreadedConnections()
         {
             var threads = new List<Thread>();
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 10; i++)
             {
 //                var list = new List<RedisClient>();
 //                for (int j = 0; j < 50; j++)
 //                {
 //                    list.Add(new RedisClient(););
 //                }
-                var client = new RedisClient();;
+                var client = new RedisClient();
                 threads.Add(new Thread(() =>
                                {
-                                   var stopwatch = new Stopwatch();
-                                   stopwatch.Start();
                                    long responeTime = 0;
 
-                                   for (int k = 0; k < 100000; k++)
+                                   for (int k = 0; k < 1000; k++)
                                    {
 //                                       for (int j = 0; j < list.Count; j++)
 //                                       {
 //                                           list[j].Ping();
 //                                       }
+                                       var newGuid = Guid.NewGuid().ToString();
                                        var stopwatchq = new Stopwatch();
-                                       stopwatchq.Start();
-                                       client.Ping();
+                                       stopwatchq.Restart();
+                                       client.Set("foo","bar");
                                        stopwatchq.Stop();
+                                       Console.WriteLine("---->" + stopwatchq.ElapsedMilliseconds);
                                        responeTime += stopwatchq.ElapsedMilliseconds;
                                    }
 
-                                   stopwatch.Stop();
-                                   Console.WriteLine("---->" + stopwatch.ElapsedMilliseconds);
-                                   Console.WriteLine("X---->" + responeTime/100000);
+                                   Console.WriteLine("X---->" + responeTime);
                                }));
             }
 

@@ -1,4 +1,5 @@
 using redis_sharp.server.datastructures;
+using redis_sharp.server.queues;
 
 namespace redis_sharp.server.commands
 {
@@ -13,8 +14,8 @@ namespace redis_sharp.server.commands
 
         public string Process(Request request)
         {
-            store.Set(request.Args[0],new RedisString(request.Args[1]));
-            return Response.Ok();
+            store.Set(request.args[0],new RedisString(request.args[1]));
+            return Reply.Ok();
         }
     }
 }

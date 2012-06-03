@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using redis_sharp.server;
+using redis_sharp.server.daemons;
 
 namespace redis_sharp_test.server
 {
@@ -12,7 +13,7 @@ namespace redis_sharp_test.server
         [Test]
         public void ShouldAskToReadFourBytesInTheBeggining()
         {
-            var redisRequest = new Request(null);
+            var redisRequest = new ClientRequest(null);
 
             Assert.That(redisRequest.IsComplete(), Is.False);
             Assert.That(redisRequest.NumberOfBytesToRead, Is.EqualTo(4));
@@ -21,7 +22,7 @@ namespace redis_sharp_test.server
         [Test]
         public void ShouldReadFirstRequestLineTillCrLfAsNumberOfLinesInTheCommand()
         {
-            var redisRequest = new Request(null);
+            var redisRequest = new ClientRequest(null);
             
             redisRequest.AddData("*42\r");
             Assert.That(redisRequest.NumberOfCommands, Is.EqualTo(0));
@@ -37,7 +38,7 @@ namespace redis_sharp_test.server
         [Test]
         public void ShouldParseTheNextLineAsNumberOfBytesToRead()
         {
-            var redisRequest = new Request(null);
+            var redisRequest = new ClientRequest(null);
 
             redisRequest.AddData("*4\r\n");
             redisRequest.AddData("$36\r");
@@ -51,7 +52,7 @@ namespace redis_sharp_test.server
         [Test]
         public void ShouldReadCommandTextLineAndSetupToReadNextCommandLength()
         {
-            var redisRequest = new Request(null);
+            var redisRequest = new ClientRequest(null);
 
             redisRequest.AddData("*4\r\n");
             redisRequest.AddData("$5\r\n");
@@ -67,7 +68,7 @@ namespace redis_sharp_test.server
         [Test]
         public void ShouldCompleteWhenAllCommandsAreRead()
         {
-            var redisRequest = new Request(null);
+            var redisRequest = new ClientRequest(null);
             Assert.That(redisRequest.NumberOfBytesToRead, Is.EqualTo(4));
 
             redisRequest.AddData("*4\r\n");

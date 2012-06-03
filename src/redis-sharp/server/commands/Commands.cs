@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using redis_sharp.server.daemons;
 using redis_sharp.server.datastructures;
+using redis_sharp.server.queues;
 
 namespace redis_sharp.server.commands
 {
@@ -14,15 +16,17 @@ namespace redis_sharp.server.commands
 
                                                                           /*Strings section START*/
                                                                           {"SET", new SetCommand(Store)},
-                                                                          {"GET", new GetCommand(Store)}
+                                                                          {"GET", new GetCommand(Store)},
+                                                                          {"APPEND", new AppendCommand(Store)}
                                                                           /*Strings section END*/
 
                                                                       };
 
         public static string ProcessRequest(Request request)
         {
-            /*TODO guards*/
-            return CommandTable[request.Command].Process(request);
+            if(!CommandTable.ContainsKey(request.command))
+                return Reply.ErrInvalidCommand(request.command);
+            return CommandTable[request.command].Process(request);
         }
     }
 }

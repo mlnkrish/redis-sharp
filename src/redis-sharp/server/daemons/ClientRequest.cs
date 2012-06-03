@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace redis_sharp.server
+namespace redis_sharp.server.daemons
 {
     public enum RequestState
     {
@@ -13,19 +13,31 @@ namespace redis_sharp.server
         Complete
     }
 
-    public class Request
+    public class ClientRequest
     {
-        private RequestState currentState = RequestState.Uninitialized;
+        private RequestState currentState;
         private int numberOfCommandsRead;
-        private string rawUnprocesedCommand = "";
+        private string rawUnprocesedCommand;
         private int currentCommandLength;
 
-        public Request(Socket client)
+        public ClientRequest(Socket client)
         {
-            Args = new List<string>();
-            NumberOfBytesToRead = 4;
             ClientSocket = client;
+
+            Reset();
+        }
+
+        public void Reset()
+        {
+            currentState = RequestState.Uninitialized;
+            numberOfCommandsRead = 0;
+            rawUnprocesedCommand = "";
+            currentCommandLength = 0;
+            NumberOfBytesToRead = 4;
             Buffer = new byte[NumberOfBytesToRead];
+            NumberOfCommands = 0;
+            Args = new List<string>();
+            Command = null;
         }
 
         public byte[] Buffer { get; private set; }

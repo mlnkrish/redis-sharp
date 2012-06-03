@@ -1,4 +1,4 @@
-using redis_sharp.server;
+using redis_sharp.server.queues;
 
 namespace redis_sharp.server.commands
 {

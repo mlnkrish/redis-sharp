@@ -2,7 +2,7 @@ namespace redis_sharp.server.datastructures
 {
     public class RedisString : RedisObject
     {
-        private readonly string value;
+        private string value;
 
         public RedisString(string value)
         {
@@ -17,6 +17,16 @@ namespace redis_sharp.server.datastructures
         public override string ToString()
         {
             return value;
+        }
+
+        public int Length()
+        {
+            return value.Length;
+        }
+
+        public void Append(string s)
+        {
+            value = value + s;
         }
     }
 }

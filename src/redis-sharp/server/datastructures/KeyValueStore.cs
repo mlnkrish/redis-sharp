@@ -2,7 +2,6 @@
 
 namespace redis_sharp.server.datastructures
 {
-    /*Objects of this class are thread safe*/
     public class KeyValueStore
     {
         private readonly ConcurrentDictionary<string,RedisObject> store = new ConcurrentDictionary<string, RedisObject>();

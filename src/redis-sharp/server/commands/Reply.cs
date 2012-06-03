@@ -1,6 +1,6 @@
-﻿namespace redis_sharp.server
+﻿namespace redis_sharp.server.commands
 {
-    public class Response
+    public class Reply
     {
         public static string Ok()
         {
@@ -25,6 +25,16 @@
         public static string ErrWrongType()
         {
             return "-Operation against a key holding the wrong kind of value.\r\n";
+        }
+
+        public static string ErrInvalidCommand(string command)
+        {
+            return string.Format("-Unknown or disabled command '{0}'", command);
+        }
+
+        public static string IntgerReply(int val)
+        {
+            return string.Format(":{0}\r\n", val);
         }
     }
 }
