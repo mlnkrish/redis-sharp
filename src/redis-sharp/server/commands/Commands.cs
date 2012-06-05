@@ -17,7 +17,8 @@ namespace redis_sharp.server.commands
                                                                           /*Strings section START*/
                                                                           {"SET", new SetCommand(Store)},
                                                                           {"GET", new GetCommand(Store)},
-                                                                          {"APPEND", new AppendCommand(Store)}
+                                                                          {"APPEND", new AppendCommand(Store)},
+                                                                          {"STRLEN", new StrlenCommand(Store)}
                                                                           /*Strings section END*/
 
                                                                       };

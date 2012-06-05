@@ -17,7 +17,7 @@ namespace redis_sharp_test.server
             var stopwatch = new Stopwatch();
 
             var redisClient = new RedisClient();;
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
 //                redisClient.Ping();
                 stopwatch.Restart();
@@ -59,7 +59,7 @@ namespace redis_sharp_test.server
         public void ThreadedConnections()
         {
             var threads = new List<Thread>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 4; i++)
             {
 //                var list = new List<RedisClient>();
 //                for (int j = 0; j < 50; j++)
@@ -80,7 +80,7 @@ namespace redis_sharp_test.server
                                        var newGuid = Guid.NewGuid().ToString();
                                        var stopwatchq = new Stopwatch();
                                        stopwatchq.Restart();
-                                       client.Set("foo","bar");
+                                       client.Set(newGuid,"bar");
                                        stopwatchq.Stop();
                                        Console.WriteLine("---->" + stopwatchq.ElapsedMilliseconds);
                                        responeTime += stopwatchq.ElapsedMilliseconds;

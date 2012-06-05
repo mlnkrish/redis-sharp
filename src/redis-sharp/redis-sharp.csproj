@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="server\commands\StrlenCommand.cs" />
     <Compile Include="server\daemons\CommandDaemon.cs" />
     <Compile Include="server\daemons\ResponseDaemon.cs" />
     <Compile Include="server\queues\Request.cs" />
