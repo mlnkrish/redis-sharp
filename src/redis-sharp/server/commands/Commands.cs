@@ -11,23 +11,25 @@ namespace redis_sharp.server.commands
         private static readonly KeyValueStore Store = new KeyValueStore();
 
         /*Need not be concurrent dictionary, all operation on this are gets which are thread safe*/
+
         private static readonly Dictionary<string, ICommand> CommandTable= new Dictionary<string, ICommand>()
-                                                                      {
-                                                                          // 6\141 commands
-                                                                          {"PING", new PingCommand()},
+                                                                               {
+                                                                                   // 9\141 commands
+                                                                                   {"PING", new PingCommand()},
 
-                                                                          /*Strings section START*/
-                                                                          {"SET", new SetCommand(Store)},
-                                                                          {"GET", new GetCommand(Store)},
-                                                                          {"APPEND", new AppendCommand(Store)},
-                                                                          {"STRLEN", new StrlenCommand(Store)},
-                                                                          {"DECR", new DecrCommand(Store)},
-                                                                          {"INCR", new IncrCommand(Store)},
-                                                                          {"INCRBY", new IncByCommand(Store)},
-                                                                          {"DECRBY", new DecrByCommand(Store)}
-                                                                          /*Strings section END*/
+                                                                                   /*Strings section START*/
+                                                                                   {"SET", new SetCommand(Store)},
+                                                                                   {"GET", new GetCommand(Store)},
+                                                                                   {"APPEND", new AppendCommand(Store)},
+                                                                                   {"STRLEN", new StrlenCommand(Store)},
+                                                                                   {"DECR", new DecrCommand(Store)},
+                                                                                   {"INCR", new IncrCommand(Store)},
+                                                                                   {"INCRBY", new IncByCommand(Store)},
+                                                                                   {"DECRBY", new DecrByCommand(Store)},
+                                                                                   {"GETRANGE", new GetRangeCommand(Store)}
+                                                                                   /*Strings section END*/
 
-                                                                      };
+                                                                               };
 
         public static string ProcessRequest(Request request)
         {

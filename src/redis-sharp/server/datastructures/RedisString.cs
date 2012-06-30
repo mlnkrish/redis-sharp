@@ -87,5 +87,26 @@ namespace redis_sharp.server.datastructures
             longValue = 0;
             return false;
         }
+
+        public string Substring(int start, int end)
+        {
+            if(start <0)
+            {
+                start = value.Length + start;
+            }
+            if(end <0)
+            {
+                end = value.Length + end;
+            }
+            if(start >= value.Length || start>= end)
+            {
+                return "";
+            }
+            if(end > value.Length-1)
+            {
+                end = value.Length-1;
+            }
+            return value.Substring(start,(end-start)+1);
+        }
     }
 }

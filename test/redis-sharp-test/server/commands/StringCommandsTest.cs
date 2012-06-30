@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using NUnit.Framework;
 using ServiceStack.Redis;
 
@@ -259,6 +260,44 @@ namespace redis_sharp_test.server.commands
             redisClient.SetEntry(key1, (long.MinValue + 100).ToString());
             
             redisClient.DecrBy(key1, 101);
+        }
+
+        [Test]
+        public void ShouldGetSubstring()
+        {
+            var key = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key, "abcde");
+
+            
+            var range = Encoding.ASCII.GetString(redisClient.GetRange(key, 1, 3));
+            Assert.That(range,Is.EqualTo("bcd"));
+            
+            range = Encoding.ASCII.GetString(redisClient.GetRange(key, 1, 1));
+            Assert.That(range,Is.EqualTo(""));
+            
+            range = Encoding.ASCII.GetString(redisClient.GetRange(key, 2, 1));
+            Assert.That(range,Is.EqualTo(""));
+            
+            range = Encoding.ASCII.GetString(redisClient.GetRange(key, 1, 2000));
+            Assert.That(range,Is.EqualTo("bcde"));
+
+            range = Encoding.ASCII.GetString(redisClient.GetRange(key, 2, -1));
+            Assert.That(range, Is.EqualTo("cde"));
+
+            range = Encoding.ASCII.GetString(redisClient.GetRange(key, 2, -4));
+            Assert.That(range, Is.EqualTo(""));
+
+            range = Encoding.ASCII.GetString(redisClient.GetRange(key, -4, -1));
+            Assert.That(range, Is.EqualTo("bcde"));
+        }
+
+        [Test]
+        public void ShouldReturnEmptyStringWhenKeyDoesNotExist()
+        {
+            var key = Guid.NewGuid().ToString();
+
+            var range = Encoding.ASCII.GetString(redisClient.GetRange(key, 1, 3));
+            Assert.That(range, Is.EqualTo(""));
         }
     }
 }

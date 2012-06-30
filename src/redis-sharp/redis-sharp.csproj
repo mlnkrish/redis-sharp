@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="server\commands\RedisCommand.cs" />
     <Compile Include="server\commands\string_commands\DecrByCommand.cs" />
+    <Compile Include="server\commands\string_commands\GetRangeCommand.cs" />
     <Compile Include="server\commands\string_commands\IncByCommand.cs" />
     <Compile Include="server\commands\string_commands\IncrCommand.cs" />
     <Compile Include="server\commands\string_commands\DecrCommand.cs" />
