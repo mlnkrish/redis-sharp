@@ -1,9 +1,9 @@
 using redis_sharp.server.datastructures;
 using redis_sharp.server.queues;
 
-namespace redis_sharp.server.commands
+namespace redis_sharp.server.commands.string_commands
 {
-    internal class AppendCommand : ICommand
+    internal class AppendCommand : RedisCommand
     {
         private readonly KeyValueStore store;
 
@@ -12,7 +12,12 @@ namespace redis_sharp.server.commands
             this.store = store;
         }
 
-        public string Process(Request request)
+        public override bool Validate(Request request)
+        {
+            return request.args.Count == 2;
+        }
+
+        public override string DoProcess(Request request)
         {
             var redisObject = store.Get(request.args[0]);
 

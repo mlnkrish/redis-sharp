@@ -2,9 +2,14 @@ using redis_sharp.server.queues;
 
 namespace redis_sharp.server.commands
 {
-    internal class PingCommand : ICommand
+    internal class PingCommand : RedisCommand
     {
-        public string Process(Request request)
+        public override bool Validate(Request request)
+        {
+            return true;
+        }
+
+        public override string DoProcess(Request request)
         {
             return Reply.Pong();
         }

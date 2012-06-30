@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using redis_sharp.server.commands.string_commands;
 using redis_sharp.server.daemons;
 using redis_sharp.server.datastructures;
 using redis_sharp.server.queues;
@@ -21,7 +22,9 @@ namespace redis_sharp.server.commands
                                                                           {"APPEND", new AppendCommand(Store)},
                                                                           {"STRLEN", new StrlenCommand(Store)},
                                                                           {"DECR", new DecrCommand(Store)},
-                                                                          {"INCR", new IncrCommand(Store)}
+                                                                          {"INCR", new IncrCommand(Store)},
+                                                                          {"INCRBY", new IncByCommand(Store)},
+                                                                          {"DECRBY", new DecrByCommand(Store)}
                                                                           /*Strings section END*/
 
                                                                       };

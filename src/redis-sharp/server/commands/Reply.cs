@@ -27,6 +27,11 @@
             return "-Operation against a key holding the wrong kind of value.\r\n";
         }
 
+        public static string ErrBadRequest()
+        {
+            return "-The format is invalid.\r\n";
+        }
+
         public static string ErrInvalidCommand(string command)
         {
             return string.Format("-Unknown or disabled command '{0}'", command);

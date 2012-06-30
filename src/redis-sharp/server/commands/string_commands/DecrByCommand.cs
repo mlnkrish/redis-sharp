@@ -1,26 +1,36 @@
 using redis_sharp.server.datastructures;
 using redis_sharp.server.queues;
 
-namespace redis_sharp.server.commands
+namespace redis_sharp.server.commands.string_commands
 {
-    internal class DecrCommand : ICommand
+    internal class DecrByCommand : RedisCommand
     {
         private readonly KeyValueStore store;
 
-        public DecrCommand(KeyValueStore store)
+        public DecrByCommand(KeyValueStore store)
         {
             this.store = store;
         }
 
-        public string Process(Request request)
+        public override bool Validate(Request request)
+        {
+            if (request.args.Count == 2)
+            {
+                long res;
+                return long.TryParse(request.args[1], out res);
+            }
+            return false;
+        }
+
+        public override string DoProcess(Request request)
         {
             var redisObject = store.Get(request.args[0]);
-
+            var valToIncBy = long.Parse(request.args[1]);
             if (redisObject == null)
             {
                 var redisString = new RedisString("0");
                 long longValue;
-                redisString.DecrementBy(1, out longValue);
+                redisString.DecrementBy(valToIncBy, out longValue);
                 store.Set(request.args[0], redisString);
                 return Reply.IntgerReply(longValue);
             }
@@ -33,7 +43,7 @@ namespace redis_sharp.server.commands
             if(s.IsConvertibleToLong())
             {
                 long longValue;
-                var success = s.DecrementBy(1, out longValue);
+                var success = s.DecrementBy(valToIncBy, out longValue);
                 return success ? Reply.IntgerReply(longValue) : Reply.OverFlow();
             }
             return Reply.ValueNotInt();

@@ -58,9 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="server\commands\IncrCommand.cs" />
-    <Compile Include="server\commands\DecrCommand.cs" />
-    <Compile Include="server\commands\StrlenCommand.cs" />
+    <Compile Include="server\commands\RedisCommand.cs" />
+    <Compile Include="server\commands\string_commands\DecrByCommand.cs" />
+    <Compile Include="server\commands\string_commands\IncByCommand.cs" />
+    <Compile Include="server\commands\string_commands\IncrCommand.cs" />
+    <Compile Include="server\commands\string_commands\DecrCommand.cs" />
+    <Compile Include="server\commands\string_commands\StrlenCommand.cs" />
     <Compile Include="server\daemons\CommandDaemon.cs" />
     <Compile Include="server\daemons\ResponseDaemon.cs" />
     <Compile Include="server\queues\Request.cs" />
@@ -68,13 +71,13 @@
     <Compile Include="server\queues\Response.cs" />
     <Compile Include="server\queues\ResponseQueue.cs" />
     <Compile Include="server\daemons\ServerDaemon.cs" />
-    <Compile Include="server\commands\AppendCommand.cs" />
+    <Compile Include="server\commands\string_commands\AppendCommand.cs" />
     <Compile Include="server\commands\Commands.cs" />
-    <Compile Include="server\commands\GetCommand.cs" />
+    <Compile Include="server\commands\string_commands\GetCommand.cs" />
     <Compile Include="server\commands\ICommand.cs" />
     <Compile Include="server\commands\PingCommand.cs" />
     <Compile Include="server\datastructures\RedisString.cs" />
-    <Compile Include="server\commands\SetCommand.cs" />
+    <Compile Include="server\commands\string_commands\SetCommand.cs" />
     <Compile Include="server\datastructures\KeyValueStore.cs" />
     <Compile Include="server\datastructures\RedisObject.cs" />
     <Compile Include="server\daemons\ClientRequest.cs" />

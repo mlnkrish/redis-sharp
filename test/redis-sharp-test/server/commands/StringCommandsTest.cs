@@ -148,5 +148,117 @@ namespace redis_sharp_test.server.commands
 
             redisClient.Decr(key);
         }
+
+        [Test]
+        public void ShouldIncrementValueByGivenValue()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, (long.MaxValue-100).ToString());
+            var key2 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key2, (long.MinValue+100).ToString());
+
+            var val1 = redisClient.IncrBy(key1, 100);
+            Assert.That(val1, Is.EqualTo(long.MaxValue));
+            var val2 = redisClient.IncrBy(key2,-100);
+            Assert.That(val2, Is.EqualTo(long.MinValue));
+        }
+
+        [Test]
+        public void ShouldCreateKeyAndSetItsValueToZeroBeforeIncrementingByGivenValue()
+        {
+            var key = Guid.NewGuid().ToString();
+
+            var val1 = redisClient.IncrBy(key,200);
+            Assert.That(val1, Is.EqualTo(200));
+
+            var strValue = redisClient.Get<String>(key);
+            Assert.That(strValue, Is.EqualTo("200"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnWhenKeyHasANonLongValue_IncrBy()
+        {
+            var key = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key, "abcd");
+
+            redisClient.IncrBy(key,100);
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnOverflow_IncrBy()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, (long.MaxValue - 100).ToString());
+            
+            redisClient.IncrBy(key1, 101);
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnUnderflow_IncrBy()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, (long.MinValue + 100).ToString());
+            
+            redisClient.IncrBy(key1, -101);
+        }
+
+        [Test]
+        public void ShouldDecrementValueByGivenValue()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, (long.MinValue+100).ToString());
+            var key2 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key2, (long.MaxValue-100).ToString());
+
+            var val1 = redisClient.DecrBy(key1, 100);
+            Assert.That(val1, Is.EqualTo(long.MinValue));
+            var val2 = redisClient.DecrBy(key2,-100);
+            Assert.That(val2, Is.EqualTo(long.MaxValue));
+        }
+
+        [Test]
+        public void ShouldCreateKeyAndSetItsValueToZeroBeforeDecrementingByGivenValue()
+        {
+            var key = Guid.NewGuid().ToString();
+
+            var val1 = redisClient.DecrBy(key,200);
+            Assert.That(val1, Is.EqualTo(-200));
+
+            var strValue = redisClient.Get<String>(key);
+            Assert.That(strValue, Is.EqualTo("-200"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnWhenKeyHasANonLongValue_DecrBy()
+        {
+            var key = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key, "abcd");
+
+            redisClient.DecrBy(key,100);
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnOverflow_DecrBy()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, (long.MaxValue - 100).ToString());
+            
+            redisClient.DecrBy(key1, -101);
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnUnderflow_DecrBy()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, (long.MinValue + 100).ToString());
+            
+            redisClient.DecrBy(key1, 101);
+        }
     }
 }
