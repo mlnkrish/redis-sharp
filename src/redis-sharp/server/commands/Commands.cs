@@ -12,13 +12,16 @@ namespace redis_sharp.server.commands
         /*Need not be concurrent dictionary, all operation on this are gets which are thread safe*/
         private static readonly Dictionary<string, ICommand> CommandTable= new Dictionary<string, ICommand>()
                                                                       {
+                                                                          // 6\141 commands
                                                                           {"PING", new PingCommand()},
 
                                                                           /*Strings section START*/
                                                                           {"SET", new SetCommand(Store)},
                                                                           {"GET", new GetCommand(Store)},
                                                                           {"APPEND", new AppendCommand(Store)},
-                                                                          {"STRLEN", new StrlenCommand(Store)}
+                                                                          {"STRLEN", new StrlenCommand(Store)},
+                                                                          {"DECR", new DecrCommand(Store)},
+                                                                          {"INCR", new IncrCommand(Store)}
                                                                           /*Strings section END*/
 
                                                                       };

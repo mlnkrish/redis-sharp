@@ -7,10 +7,11 @@ namespace redis_sharp_test.server.commands
     [TestFixture]
     public class StringCommandsTest
     {
+        RedisClient redisClient = new RedisClient();
+
         [Test]
         public void ShouldBeAbleToGetAndSetStrings()
         {
-            var redisClient = new RedisClient();
             var key = Guid.NewGuid().ToString();
             redisClient.SetEntry(key,"bar");
             redisClient.SetEntry(key, "bar");
@@ -22,7 +23,6 @@ namespace redis_sharp_test.server.commands
         [Test]
         public void ShouldGetNullWhenTryingToAccessANonExistingKey()
         {
-            var redisClient = new RedisClient();
             var nokey = Guid.NewGuid().ToString();
             var val = redisClient.Get<string>(nokey);
 
@@ -32,7 +32,6 @@ namespace redis_sharp_test.server.commands
         [Test]
         public void ShouldAppendToAndExisitngString()
         {
-            var redisClient = new RedisClient();
             var key = Guid.NewGuid().ToString();
 
             redisClient.SetEntry(key, "bar");
@@ -47,7 +46,6 @@ namespace redis_sharp_test.server.commands
         [Test]
         public void ShouldCreateNewIfStringDoesntExists()
         {
-            var redisClient = new RedisClient();
             var key = Guid.NewGuid().ToString();
             var length = redisClient.AppendToValue(key, "baz");
             Assert.That(length,Is.EqualTo(3));
@@ -60,7 +58,6 @@ namespace redis_sharp_test.server.commands
         [Test]
         public void ShouldGetLengthOfStringStoredInTheKey()
         {
-            var redisClient = new RedisClient();
             var key = Guid.NewGuid().ToString();
             redisClient.SetEntry(key, "1234567");
 
@@ -73,12 +70,83 @@ namespace redis_sharp_test.server.commands
         [Test]
         public void ShouldGetZeroAsLengthOfStringWhenTheKeyIsNotSet()
         {
-            var redisClient = new RedisClient();
             var key = Guid.NewGuid().ToString();
 
             var val = redisClient.StrLen(key);
 
             Assert.That(val, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ShouldIncrementValueByOne()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, "10");
+            var key2 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key2, "-10");
+
+            var val1 = redisClient.Incr(key1);
+            Assert.That(val1, Is.EqualTo(11));
+            var val2 = redisClient.Incr(key2);
+            Assert.That(val2, Is.EqualTo(-9));
+        }
+
+        [Test]
+        public void ShouldCreateKeyAndSetItsValueToZeroBeforeIncrementing()
+        {
+            var key = Guid.NewGuid().ToString();
+            
+            var val1 = redisClient.Incr(key);
+            Assert.That(val1, Is.EqualTo(1));
+
+            var strValue = redisClient.Get<String>(key);
+            Assert.That(strValue, Is.EqualTo("1"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnWhenKeyHasANonLongValue_Incr()
+        {
+            var key = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key, "abcd");
+
+            redisClient.Incr(key);
+        }
+
+        [Test]
+        public void ShouldDecrementValueByOne()
+        {
+            var key1 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key1, "10");
+            var key2 = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key2, "-10");
+
+            var val1 = redisClient.Decr(key1);
+            Assert.That(val1, Is.EqualTo(9));
+            var val2 = redisClient.Decr(key2);
+            Assert.That(val2, Is.EqualTo(-11));
+        }
+
+        [Test]
+        public void ShouldCreateKeyAndSetItsValueToZeroBeforeDecrementing()
+        {
+            var key = Guid.NewGuid().ToString();
+            
+            var val1 = redisClient.Decr(key);
+            Assert.That(val1, Is.EqualTo(-1));
+
+            var strValue = redisClient.Get<String>(key);
+            Assert.That(strValue, Is.EqualTo("-1"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(RedisResponseException))]
+        public void ShouldErrorOnWhenKeyHasANonLongValue_Decr()
+        {
+            var key = Guid.NewGuid().ToString();
+            redisClient.SetEntry(key, "abcd");
+
+            redisClient.Decr(key);
         }
     }
 }

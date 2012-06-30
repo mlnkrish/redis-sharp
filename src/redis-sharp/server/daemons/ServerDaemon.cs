@@ -54,7 +54,6 @@ namespace redis_sharp.server.daemons
         {
             var redisRequest = (ClientRequest)ar.AsyncState;
             var clientSocket = redisRequest.ClientSocket;
-
             var bytesRead = 0;
             try
             {

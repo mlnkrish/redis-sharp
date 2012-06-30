@@ -32,9 +32,19 @@
             return string.Format("-Unknown or disabled command '{0}'", command);
         }
 
-        public static string IntgerReply(int val)
+        public static string IntgerReply(long val)
         {
             return string.Format(":{0}\r\n", val);
+        }
+
+        public static string OverFlow()
+        {
+            return string.Format("-Increment or Decrement will overflow\r\n");
+        }
+
+        public static string ValueNotInt()
+        {
+            return string.Format("-Value not integer or out of range\r\n");    
         }
     }
 }
